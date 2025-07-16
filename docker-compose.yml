@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  # PostgreSQL DB
+  postgres:
+    image: postgres:14
+    container_name: bizzflow_postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # NestJS Backend
+  backend:
+    build:
+      context: .
+    container_name: bizzflow_backend
+    restart: always
+    ports:
+      - "${PORT}:${PORT}"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+      - /app/node_modules  
+    environment:
+      - PORT=${PORT}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+  # pgAdmin (optional UI for PostgreSQL)
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: bizzflow_pgadmin
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:

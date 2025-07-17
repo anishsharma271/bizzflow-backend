@@ -19,12 +19,12 @@ export class RegisterUserDto {
     @IsNotEmpty()
     @IsString()
     @Length(10, 10)
-    number: string;
+    phone: string;
 
     @ApiProperty({ example: 'Anish Sharma' })
     @IsNotEmpty()
     @IsString()
-    name: string;
+    full_name: string;
 
     @ApiProperty({ example: '1234' })
     @IsNotEmpty()

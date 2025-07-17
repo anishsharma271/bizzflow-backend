@@ -11,7 +11,16 @@ async function bootstrap() {
     .setTitle('BizzFlow API')
     .setDescription('API documentation for BizzFlow system')
     .setVersion('1.0')
-    .addBearerAuth() // optional: if using JWT auth
+    .addBearerAuth(
+    {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      name: 'Authorization',
+      in: 'header',
+    },
+    'access-token', 
+  ) 
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

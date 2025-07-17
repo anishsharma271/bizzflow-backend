@@ -1,23 +1,21 @@
-# Start from the official Node.js image
+# Use the Node.js image
 FROM node:20
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files separately
+# Copy package.json and install
 COPY package*.json ./
-
-# Install dependencies
 RUN npm install
 
-# Copy rest of the code
+# Copy entire app (after node_modules for cache optimization)
 COPY . .
 
-# Install dev tools like ts-node-dev
-RUN npm install -g ts-node-dev
+# Optional: for file change detection
+ENV CHOKIDAR_USEPOLLING=true
 
-# Expose port
+# Expose backend port
 EXPOSE 8080
 
-# Use ts-node-dev for hot reloading
-CMD ["ts-node-dev", "--respawn", "--transpile-only", "src/main.ts"]
+# Run in watch mode
+CMD ["npm", "run", "start:docker"]

@@ -6,6 +6,7 @@ import { CustomerModule } from './customer/customer.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { DataSource } from 'typeorm';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -29,7 +30,7 @@ import { DataSource } from 'typeorm';
   providers: [],
 })
 export class AppModule implements OnModuleInit {
-  constructor(private dataSource: DataSource) {}
+  constructor(private dataSource: DataSource) { }
 
   onModuleInit() {
     if (this.dataSource.isInitialized) {

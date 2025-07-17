@@ -1,3 +1,5 @@
+import { CustomerEntity } from '../../customer/entities/customer.entity';
+import { TransactionEntity } from '../../transactions/entities/transaction.entity';
 import {
     Entity,
     PrimaryGeneratedColumn,
@@ -5,9 +7,10 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     BaseEntity,
+    OneToMany,
 } from 'typeorm';
 
-@Entity({ name: 'users' }) // table name in DB
+@Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
     @PrimaryGeneratedColumn('uuid')
     id: string;
@@ -19,10 +22,13 @@ export class UserEntity extends BaseEntity {
     email?: string;
 
     @Column()
-    number: string;
+    phone: string;
 
     @Column()
     pin: string;
+
+    @Column({ default: false })
+    is_deleted: boolean;
 
     @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     created_at: Date;
@@ -33,4 +39,10 @@ export class UserEntity extends BaseEntity {
         onUpdate: 'CURRENT_TIMESTAMP',
     })
     updated_at: Date;
+
+    @OneToMany(() => CustomerEntity, (customer) => customer.owner)
+    customers: CustomerEntity[];
+
+    @OneToMany(() => TransactionEntity, (transaction) => transaction.owner)
+    transactions: TransactionEntity[];
 }

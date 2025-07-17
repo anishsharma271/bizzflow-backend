@@ -6,5 +6,5 @@ export class CheckUserDto {
   @IsNotEmpty()
   @IsString()
   @Length(10, 10)
-  number: string;
+  phone: string;
 }

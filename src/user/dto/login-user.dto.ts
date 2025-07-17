@@ -6,7 +6,7 @@ export class LoginDto {
   @IsNotEmpty()
   @IsString()
   @Length(10, 10)
-  number: string;
+  phone: string;
 
   @ApiProperty({ example: '1234' })
   @IsNotEmpty()

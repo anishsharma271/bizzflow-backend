@@ -1,10 +1,11 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { MiddlewareConsumer, Module, OnModuleInit } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { CustomerModule } from './customer/customer.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { DataSource } from 'typeorm';
+import { LoggerMiddleware } from './utils/middleware/logger.middleware';
 
 
 @Module({
@@ -38,5 +39,8 @@ export class AppModule implements OnModuleInit {
     } else {
       console.error('❌ Failed to connect to the database');
     }
+  }
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }

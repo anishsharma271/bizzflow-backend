@@ -11,6 +11,7 @@ import {
   Req,
   InternalServerErrorException,
   UseInterceptors,
+  HttpException,
 } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { JwtAuthGuard } from '../utils/jwt/jwt.guard';
@@ -27,7 +28,7 @@ import { AuthenticatedRequest } from '../utils/types/express-request.interface';
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) { }
 
-  @Post()
+  @Post("/create")
   async create(@Body() dto: CreateCustomerDto, @Req() req: AuthenticatedRequest) {
     try {
       const owner_id = req.user.sub;
@@ -37,12 +38,13 @@ export class CustomerController {
         data: result,
       };
     } catch (err) {
+      if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err.message || 'Something went wrong');
     }
 
   }
 
-  @Get()
+  @Get("/all")
   async findAll(@Req() req: AuthenticatedRequest) {
     try {
       const owner_id = req.user.sub;
@@ -52,22 +54,25 @@ export class CustomerController {
         data: result,
       };
     } catch (err) {
+      if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err.message || 'Something went wrong');
     }
 
   }
 
-  @Get(':id')
-  async findOne(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+  @Get('/getcustomerofowner')
+  async findOne(@Req() req: AuthenticatedRequest) {
     try {
 
       const owner_id = req.user.sub;
-      const result = await this.customerService.findOne(id, owner_id);
+      const result = await this.customerService.findOne(owner_id);
       return {
         msg: 'Customer fetched successfully',
         data: result,
       };
     } catch (err) {
+      
+      if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err.message || 'Something went wrong');
     }
 
@@ -88,6 +93,7 @@ export class CustomerController {
         data: result,
       };
     } catch (err) {
+      if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err.message || 'Something went wrong');
     }
 
@@ -105,6 +111,7 @@ export class CustomerController {
       };
 
     } catch (err) {
+      if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err.message || 'Something went wrong');
     }
 

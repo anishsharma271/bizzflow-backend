@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, InternalServerErrorException, UseInterceptors, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, InternalServerErrorException, UseInterceptors, UseGuards, Req, NotFoundException, HttpException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
@@ -6,6 +6,7 @@ import { ResponseInterceptor } from '../utils/interceptor/response.interceptor';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login-user.dto';
 import { JwtAuthGuard } from '../utils/jwt/jwt.guard';
+import { CheckUserDto } from './dto/check-user.dto';
 
 
 @ApiTags('User')
@@ -16,7 +17,7 @@ export class UserController {
   @Post("/register")
   async register(@Body() registerUserDto: RegisterUserDto) {
     try {
-    
+
       const result = await this.userService.register(registerUserDto)
       console.log('User Register Result -> \n', result);
       return {
@@ -25,6 +26,7 @@ export class UserController {
       };
 
     } catch (err) {
+      if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err.message || 'Something went wrong');
     }
 
@@ -40,6 +42,24 @@ export class UserController {
       };
 
     } catch (err) {
+      if (err instanceof HttpException) throw err;
+      throw new InternalServerErrorException(err.message || 'Something went wrong');
+    }
+
+  }
+  @Post("/check-User")
+  async checkUser(@Body() checkUserDto: CheckUserDto) {
+    try {
+      const result = await this.userService.checkuser(checkUserDto)
+      return {
+        msg: 'Business owner found successfully',
+        data: result,
+      };
+
+    } catch (err) {
+
+      if (err instanceof HttpException) throw err;
+
       throw new InternalServerErrorException(err.message || 'Something went wrong');
     }
 
@@ -58,6 +78,7 @@ export class UserController {
       };
 
     } catch (err) {
+      if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err.message || 'Something went wrong');
     }
 
@@ -75,6 +96,7 @@ export class UserController {
       };
 
     } catch (err) {
+      if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err.message || 'Something went wrong');
     }
   }
@@ -90,6 +112,7 @@ export class UserController {
       };
 
     } catch (err) {
+      if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err.message || 'Something went wrong');
     }
   }
@@ -105,6 +128,7 @@ export class UserController {
       };
 
     } catch (err) {
+      if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err.message || 'Something went wrong');
     }
   }

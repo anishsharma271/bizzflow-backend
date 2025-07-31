@@ -22,9 +22,9 @@ export class CustomerService {
     return this.customerRepo.find({ where: { owner: { id: owner_id }, is_deleted: false } });
   }
 
-  async findOne(id: string, owner_id: string) {
-    const customer = await this.customerRepo.findOne({ where: { id, owner: { id: owner_id }, is_deleted: false } });
-    if (!customer) throw new NotFoundException('Customer not found');
+  async findOne( owner_id: string) {
+    const customer = await this.customerRepo.findOne({ where: {  owner: { id: owner_id }, is_deleted: false } });
+    if (!customer) throw new NotFoundException('Customers not found');
     return customer;
   }
 

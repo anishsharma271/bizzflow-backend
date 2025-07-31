@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LoginDto } from './dto/login-user.dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { CheckUserDto } from './dto/check-user.dto';
 
 @Injectable()
 export class UserService {
@@ -36,8 +37,8 @@ export class UserService {
     if (!save) {
       throw new InternalServerErrorException("Something went wrong");
     }
-
-    return true;
+    const token = this.generateJwt(save.id);
+    return token;
   }
   async login(loginDto: LoginDto) {
 
@@ -50,9 +51,9 @@ export class UserService {
       throw new NotFoundException("Business owner not exists! Please register.");
     }
     const isMatch = await bcrypt.compare(loginDto.pin, existing.pin);
-    if (!isMatch) throw new UnauthorizedException('Invalid credentials');
+    if (!isMatch) throw new UnauthorizedException('Invalid Paswword kindly add correct password');
 
-    const token = await this.generateJwt(existing.id);
+    const token = this.generateJwt(existing.id);
 
     return token;
 
@@ -64,6 +65,13 @@ export class UserService {
       access_token: this.jwtService.sign(payload),
     };
   }
+
+  async checkuser(phoneDto: CheckUserDto) {
+    const data = await this.userRepository.findOne({ where: { phone: phoneDto.phone } })
+    if (!data) throw new NotFoundException("user not found")
+    return data;
+  }
+
 
   async findAll() {
     const data = await this.userRepository.find()

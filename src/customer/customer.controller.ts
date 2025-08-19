@@ -19,10 +19,11 @@ import { Request } from 'express';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { ResponseInterceptor } from '../utils/interceptor/response.interceptor';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthenticatedRequest } from '../utils/types/express-request.interface';
 @ApiTags('Customer')
 @Controller('customer')
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 @UseInterceptors(ResponseInterceptor)
 export class CustomerController {
@@ -35,7 +36,6 @@ export class CustomerController {
       const result = await this.customerService.create(dto, owner_id);
       return {
         msg: 'Customer created successfully',
-        data: result,
       };
     } catch (err) {
       if (err instanceof HttpException) throw err;

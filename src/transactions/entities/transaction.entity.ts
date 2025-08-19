@@ -38,4 +38,7 @@ export class TransactionEntity extends BaseEntity {
         onUpdate: 'CURRENT_TIMESTAMP',
     })
     updated_at: Date;
+
+      @Column({ default: false })
+    is_deleted: boolean;
 }

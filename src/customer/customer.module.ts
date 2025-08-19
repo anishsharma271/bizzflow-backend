@@ -6,18 +6,10 @@ import { CustomerEntity } from './entities/customer.entity';
 import { UserEntity } from '../user/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { CustomerRelationalPersistanceModule } from './infrastructure/relational/relational-persistance.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CustomerEntity, UserEntity]),
- ConfigModule, 
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: configService.get<string>('JWT_EXPIRES_IN') }, 
-      }),
-      inject: [ConfigService],
-    }),],
+  imports: [CustomerRelationalPersistanceModule],
   controllers: [CustomerController],
   providers: [CustomerService],
 })

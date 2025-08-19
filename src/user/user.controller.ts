@@ -26,6 +26,8 @@ export class UserController {
       };
 
     } catch (err) {
+      console.log("err",err);
+      
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err.message || 'Something went wrong');
     }
@@ -42,6 +44,7 @@ export class UserController {
       };
 
     } catch (err) {
+      console.log("err",err);
       if (err instanceof HttpException) throw err;
       throw new InternalServerErrorException(err.message || 'Something went wrong');
     }
@@ -86,6 +89,8 @@ export class UserController {
   }
 
 
+  @ApiBearerAuth('access-token')
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
@@ -101,6 +106,7 @@ export class UserController {
     }
   }
 
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
@@ -117,6 +123,7 @@ export class UserController {
     }
   }
 
+  @ApiBearerAuth('access-token')
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {

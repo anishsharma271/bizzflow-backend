@@ -1,40 +1,38 @@
 
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CustomerEntity } from './entities/customer.entity';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { customerRepo } from './infrastructure/customer.repo';
 
 @Injectable()
 export class CustomerService {
   constructor(
-    @InjectRepository(CustomerEntity)
-    private readonly customerRepo: Repository<CustomerEntity>,
+   
+       private readonly customerRepository: customerRepo,
   ) { }
 
   async create(createDto: CreateCustomerDto, owner_id: string) {
-    const newCustomer = this.customerRepo.create({ ...createDto, owner: { id: owner_id }, });
-    return this.customerRepo.save(newCustomer);
+    const newCustomer =  await this.customerRepository.saveCustomer({ ...createDto, owner: { id: owner_id }, });
+    return newCustomer;
   }
 
   async findAll(owner_id: string) {
-    return this.customerRepo.find({ where: { owner: { id: owner_id }, is_deleted: false } });
+    return  await this.customerRepository.findAll(owner_id );
   }
 
   async findOne( owner_id: string) {
-    const customer = await this.customerRepo.findOne({ where: {  owner: { id: owner_id }, is_deleted: false } });
+    const customer = await this.customerRepository.findcustomerofowner(owner_id);
     if (!customer) throw new NotFoundException('Customers not found');
     return customer;
   }
 
   async update(id: string, owner_id: string, updateDto: UpdateCustomerDto) {
-    const result = await this.customerRepo.update({ id, owner: { id: owner_id } }, updateDto);
-    return result.affected > 0;
+   return await this.customerRepository.updateEntity( id, owner_id, updateDto);
+   
   }
 
   async remove(id: string, owner_id: string) {
-    const result = await this.customerRepo.update({ id, owner: { id: owner_id } }, { is_deleted: true });
-    return result.affected > 0;
+   return await this.customerRepository.remove( id, owner_id);
+   
   }
 }

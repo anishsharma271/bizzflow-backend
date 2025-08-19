@@ -2,13 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterc
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ResponseInterceptor } from '../utils/interceptor/response.interceptor';
 import { JwtAuthGuard } from '../utils/jwt/jwt.guard';
 import { AuthenticatedRequest } from '../utils/types/express-request.interface';
 import { CustomerSummaryQueryDto } from './dto/customer-summary.dto';
 @ApiTags('transactions')
 @Controller('transactions')
+@ApiBearerAuth('access-token')
 @UseGuards(JwtAuthGuard)
 @UseInterceptors(ResponseInterceptor)
 export class TransactionsController {
